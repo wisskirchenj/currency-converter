@@ -8,6 +8,15 @@ const exchangeRates = {
   GBP: 0.75
 };
 
+const menuPrompt = `What do you want to do?
+1-Convert currencies 2-Exit program
+`;
+
+const menuRules = [{
+  test: choice => ['1', '2'].includes(choice),
+  violationMessage: 'Unknown input'
+}];
+
 const currencyRules = [{
   test: cur => Object.keys(exchangeRates).includes(cur),
   violationMessage: 'Unknown currency'
@@ -21,36 +30,41 @@ const amountRules = [{
   violationMessage: 'The amount cannot be less than 1'
 }];
 
-const invalidInput = (input, rules) => {
-  const failedRule = rules.find(rule => !rule.test(input));
-  if (failedRule) {
-    console.log(failedRule.violationMessage);
-    return true;
+const inputValidated = (prompt, rules) => {
+  while (true) {
+    const userInput = input(prompt).toUpperCase();
+    const failedRule = rules.find(rule => !rule.test(userInput));
+    if (failedRule) {
+      console.log(failedRule.violationMessage);
+    } else {
+      return userInput;
+    }
   }
-  return false;
-}
+};
+
+const convert = (sourceCurrency, targetCurrency, amount) => {
+  return (amount * exchangeRates[targetCurrency] / exchangeRates[sourceCurrency]).toFixed(4);
+};
 
 const converter = () => {
-  console.log(`Welcome to Currency Converter!`);
+  console.log('Welcome to Currency Converter!');
   for (let currency in exchangeRates) {
     console.log(`1 USD equals ${exchangeRates[currency]} ${currency}`);
   }
-  console.log(`I can convert USD to these currencies: JPY, EUR, RUB, USD, GBP
-  Type the currency you wish to convert: USD`);
 
-  const currency = input('To: ').toUpperCase();
-  if (invalidInput(currency, currencyRules)) {
-    return;
+  while (inputValidated(menuPrompt, menuRules) === '1') {
+    console.log('What do you want to convert?');
+    const sourceCurrency = inputValidated('From: ', currencyRules);
+    const targetCurrency = inputValidated('To: ', currencyRules);
+    const amount = Number(inputValidated('Amount: ', amountRules));
+
+    console.log(`Result: ${amount} ${sourceCurrency} equals ` +
+        `${convert(sourceCurrency, targetCurrency, amount)} ${targetCurrency}`);
   }
+  console.log('Have a nice day!');
+};
 
-  const amount = Number(input('Amount: '));
-  if (invalidInput(amount, amountRules)) {
-    return;
-  }
-
-  console.log(`Result: ${amount} USD equals ${(amount * exchangeRates[currency]).toFixed(4)} ${currency}`)
-}
-
-exports.invalidInput = invalidInput;
+exports.inputValidated = inputValidated;
 exports.converter = converter;
+exports.convert = convert;
 exports.exchangeRates = exchangeRates;

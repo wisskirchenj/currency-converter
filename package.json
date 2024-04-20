@@ -3,10 +3,7 @@
   "version": "0.0.0",
   "main": "src/converter.js",
   "scripts": {
-    "lint": "eslint . --fix --ignore-path .gitignore",
-    "test": "jest",
-    "coverage": "jest run --coverage.enabled --silent",
-    "sonar": "npx sonar-scanner -Dsonar.token=$npm_config_sonartoken"
+    "test": "jest"
   },
   "dependencies": {
     "sync-input": "https://github.com/hyperskill/sync-input/archive/v1.tar.gz"
