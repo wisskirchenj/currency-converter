@@ -1,6 +1,6 @@
 const {inputValidated, convert, converter, exchangeRates} = require("../src/converter.js");
 const input = require('sync-input');
-jest.mock('sync-input', () => jest.fn()); // needs to be top level
+jest.mock('sync-input'); // needs to be top level
 
 describe('converter tests', () => {
 
